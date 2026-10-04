@@ -382,16 +382,6 @@ airpower-pm/
 └── README.md
 ```
 
-## 🎬 Suggested 3-Minute Demo
-
-1. **Overview:** fleet status and the aircraft requiring attention.
-2. **Aircraft Detail (A017):** rising vibration and temperature trends.
-3. **Predictive Maintenance:** probability, risk class and "Why is the risk high?".
-4. **Same page:** the recommended-action panel (inspection, window, reason). Prediction and recommendation are separate layers.
-5. **Fleet Availability:** current vs reactive vs planned and workload per window.
-6. **AI Copilot:** ask "Why is aircraft A017 classified as high risk?" and show the grounding panel.
-
-Key line: *"The ML model predicts. The GenAI layer explains, grounded in data and maintenance knowledge."*
 
 ## ⚙️ Getting Started
 
