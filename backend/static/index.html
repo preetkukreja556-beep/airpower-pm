@@ -15,11 +15,22 @@ table{width:100%;border-collapse:collapse}th,td{padding:5px 8px;text-align:left;
 .bar{height:8px;background:#e4e6e9}.bar i{display:block;height:100%}.sg{position:relative;height:10px;background:linear-gradient(90deg,var(--lo) 30%,var(--me) 30% 60%,var(--hi) 60%)}.sg i{position:absolute;top:-4px;width:3px;height:18px;background:#000}
 .mu{color:var(--mu)}.er{background:#fbe9e7;border:1px solid #e0a9a3;padding:8px 10px;margin-bottom:10px}.em{padding:22px;text-align:center;color:var(--mu)}
 .ch{height:300px;overflow:auto;padding:10px;background:#fafaf8}.m{margin:0 0 10px;padding:7px 10px;border:1px solid var(--bd);background:#fff;white-space:pre-wrap;line-height:1.45}.m.u{background:#e8eef5;margin-left:60px}.m small{display:block;color:var(--mu);margin-bottom:2px}
-.pl{display:flex;gap:6px;align-items:center;font-size:12px;margin-bottom:6px}.pl span{border:1px solid var(--bd);padding:2px 6px;background:#fff}.lg{max-width:300px;margin:12vh auto;background:#fff;border:1px solid var(--bd);padding:18px}.lg input{width:100%;margin:3px 0 10px}
+.pl{display:flex;gap:6px;align-items:center;font-size:12px;margin-bottom:6px}.pl span{border:1px solid var(--bd);padding:2px 6px;background:#fff}#lg{padding:9vh 14px}.lw{max-width:760px;margin:auto;background:#fff;border:1px solid var(--bd)}.lt{background:#1f2a37;color:#fff;padding:10px 16px}.lt span{margin-left:12px;color:#aeb8c6;font-size:12px}
+.lb{display:flex;flex-wrap:wrap}.lc{flex:1;min-width:300px;padding:16px;border-right:1px solid var(--bd)}.lc:last-child{border:0}.lc h4{margin:0 0 12px;font-size:12px;text-transform:uppercase;color:var(--mu)}.lc label{display:block;font-size:12px;color:var(--mu);margin-top:8px}.lc input{width:100%;margin:3px 0 8px}.lc button{margin-top:8px;width:100%;padding:7px}
+#le{color:var(--hi);margin-top:8px;min-height:16px}.dt td,.dt th{white-space:normal}.lf{border-top:1px solid var(--bd);background:#fafaf8;padding:8px 16px;font-size:12px;color:var(--mu)}
 </style></head><body>
-<div id="lg" class="lg" style="display:none"><b>AIRPOWER-PM</b><div class="mu" style="margin:2px 0 12px">Maintenance analytics · sign in</div>
-<label>User</label><input id="un"><label>Password</label><input id="pw" type="password" onkeydown="if(event.key=='Enter')login()"><button class="p" onclick="login()">Sign in</button><div id="le" style="color:var(--hi);margin-top:8px"></div>
-<p class="mu" style="font-size:12px">Demo: officer / air@123 or planner / fleet@123. Synthetic data; prototype auth only.</p></div>
+<div id="lg" style="display:none"><div class="lw">
+<div class="lt"><b>AIRPOWER-PM</b><span>Predictive Maintenance &amp; Fleet Availability · Sign in</span></div>
+<div class="lb"><div class="lc"><h4>1. Enter your credentials</h4>
+<label>Username</label><input id="un" autocomplete="off" onkeydown="if(event.key=='Enter')login()">
+<label>Password</label><input id="pw" type="password" onkeydown="if(event.key=='Enter')login()">
+<button class="p" onclick="login()">Sign in</button><div id="le"></div></div>
+<div class="lc"><h4>Demo accounts (click to fill)</h4>
+<table class="dt"><tr><th>Role</th><th>Username</th><th>Password</th></tr>
+<tr class="k" onclick="fillL('officer','air@123')"><td><b>Maintenance Officer</b><br><span class="mu">Aircraft risk, work orders, inspection requests</span></td><td class="n">officer</td><td class="n">air@123</td></tr>
+<tr class="k" onclick="fillL('planner','fleet@123')"><td><b>Fleet Planner</b><br><span class="mu">Availability, workload, priority queue</span></td><td class="n">planner</td><td class="n">fleet@123</td></tr></table>
+<p class="mu" style="font-size:12px;margin:8px 0 0">In this prototype both accounts open the same screens; the role is only shown in the header. Authentication is demo-only.</p></div></div>
+<div class="lf">Prototype uses synthetic/demo aircraft data. Not affiliated with any defence organisation.</div></div></div>
 <div id="ap" style="display:none"><div id="hd"><b>AIRPOWER-PM</b><span>Predictive Maintenance &amp; Fleet Availability</span><span class="r n" id="ck"></span><span id="who"></span><button onclick="out()">Logout</button></div>
 <div id="bn">Prototype uses synthetic/demo aircraft data. Aircraft types and IDs are fictional. Not affiliated with any defence organisation.</div>
 <div id="nv"></div><div id="mn"></div></div>
@@ -28,6 +39,7 @@ const S={tok:sessionStorage.getItem("t"),sort:{},f:{},chat:[],req:JSON.parse(ses
 const $=i=>document.getElementById(i),pc=x=>Math.round(x*100)+"%",bd=r=>`<span class="b ${r}">${r}</span>`,col={HIGH:"#b3261e",MEDIUM:"#b26a00",LOW:"#2e7d32"};
 const ms=a=>a.status!="AVAILABLE"?"In maintenance":a.risk!="LOW"?"Inspection due":"Routine";
 async function api(u,o={}){o.headers={...(o.headers||{}),Authorization:"Bearer "+S.tok};const r=await fetch(u,o);if(r.status==401){out();throw"auth"}if(!r.ok)throw new Error(u+" → HTTP "+r.status);return r.json()}
+function fillL(u,p){$("un").value=u;$("pw").value=p;$("pw").focus()}
 async function login(){const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:$("un").value,password:$("pw").value})});
 if(!r.ok){$("le").textContent="Invalid credentials";return}const d=await r.json();S.tok=d.token;sessionStorage.setItem("t",d.token);sessionStorage.setItem("u",d.name+" ("+d.role+")");boot()}
 function out(){sessionStorage.clear();S.tok=null;$("ap").style.display="none";$("lg").style.display="block"}
